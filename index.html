@@ -1,0 +1,134 @@
+<!-- tailwindcss config -->
+
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./output.css" rel="stylesheet">
+</head>
+
+<body class="flex flex-col items-center bg-gray-50">
+    <header class="text-center w-full mt-6">
+        <h1 class="text-3xl font-bold text-center">TO DO LIST</h1>
+    </header>
+
+    <main class="w-full md:w-[60%] xl:w-[30%] mt-6 px-8">
+        <div class="flex flex-row gap-4 justify-center  h-10">
+            <input type="text" class="w-[80%]  border rounded-lg pl-4" id="text_field">
+            <button
+                class="w-[20%] border rounded-lg bg-blue-500 hover:cursor-pointer hover:bg-blue-600 active:bg-blue-700"
+                id="add_button">Add</button>
+        </div>
+
+        <div id="items_list" class="flex flex-col gap-4 my-8 ">
+
+        </div>
+    </main>
+
+    <script>
+        const textField = document.querySelector('#text_field');
+        const addButton = document.querySelector('#add_button');
+        const itemList = document.querySelector('#items_list');
+
+        
+
+        const caricaTask = () => {
+            console.log(tasks)
+            console.log('carico')
+            tasks.forEach((task) =>{ showTask(task) })
+        }
+
+        const removeTask = (task) => {
+            let position;
+            for (let i = 0; i < tasks.length; i++) {
+                tasks[i].id == task.id && tasks.splice(i, 1);
+            }
+
+            const itemToRemove = document.querySelector(`#t${task.id}`);
+            itemList.removeChild(itemToRemove)
+
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        const showTask = (task) => {
+            const item = document.createElement('div');
+            item.id = `t${task.id}`;
+            item.className = 'border rounded-lg pl-4 h-10 flex justify-between'
+            itemList.appendChild(item);
+
+            const checkBox = document.createElement('input');
+            checkBox.type = 'checkbox';
+            checkBox.checked = task.isChecked ? true : false
+            item.appendChild(checkBox)
+
+            const itemSpan = document.createElement('span');
+            itemSpan.className = `self-center ${task.isChecked ? 'line-through' : ''}`
+            itemSpan.textContent = task.value;
+            item.appendChild(itemSpan);
+
+            const removeButton = document.createElement('img');
+            removeButton.src = './Img/close.png';
+            removeButton.className = `object-contain h-[40%] w-[5%] self-center mr-5 hover:cursor-pointer ${window.outerWidth >= 1280 ? 'invisible' : '' }`
+            item.appendChild(removeButton)
+
+            if (window.outerWidth >= 1280) {
+                item.addEventListener(('mouseenter'), () => {
+                    removeButton.classList.toggle('invisible')
+                })
+                item.addEventListener(('mouseleave'), () => {
+                    removeButton.classList.toggle('invisible')
+                })
+            }
+
+
+            removeButton.addEventListener(('click'), () => {
+                removeTask(task);
+            })
+
+            checkBox.addEventListener(('input'), () => {
+                task.isChecked = !task.isChecked;
+                itemSpan.classList.toggle('line-through');
+
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+            })
+        }
+
+        const addTask = (value) => {
+            const newTask = {
+                id: tasks.length,
+                value: value,
+                isChecked: false
+            }
+
+            tasks.push(newTask);
+            showTask(newTask);
+
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        const tasks = JSON.parse(localStorage.getItem('tasks')) ?? [];
+        tasks.length != 0 && caricaTask();
+
+        addButton.addEventListener(('click'), () => {
+            console.log(tasks)
+
+            textField.value !== '' && addTask(textField.value)
+            textField.value = ''
+        })
+
+        textField.addEventListener(('keydown'), (e) => {
+            if (e.key === 'Enter') {
+                console.log(tasks)
+
+                textField.value !== '' && addTask(textField.value)
+                textField.value = ''
+            }
+        })
+
+
+    </script>
+</body>
+
+</html>
