@@ -28,16 +28,17 @@
     </main>
 
     <script>
+        //Components
         const textField = document.querySelector('#text_field');
         const addButton = document.querySelector('#add_button');
         const itemList = document.querySelector('#items_list');
 
-        
 
+        //Functions
         const caricaTask = () => {
             console.log(tasks)
             console.log('carico')
-            tasks.forEach((task) =>{ showTask(task) })
+            tasks.forEach((task) => { showTask(task) })
         }
 
         const removeTask = (task) => {
@@ -68,9 +69,13 @@
             itemSpan.textContent = task.value;
             item.appendChild(itemSpan);
 
-            const removeButton = document.createElement('img');
-            removeButton.src = './Img/close.png';
-            removeButton.className = `object-contain h-[40%] w-[5%] self-center mr-5 hover:cursor-pointer ${window.outerWidth >= 1280 ? 'invisible' : '' }`
+            const removeButton = document.createElement('button');
+            removeButton.className = `h-[20%] w-[5%] mr-5 self-center ${window.outerWidth >= 1280 ? 'invisible' : ''} remove-button`
+            removeButton.id = `b${task.id}`;
+            const imgRemoveButton = document.createElement('img');
+            imgRemoveButton.src = './Img/close.png';
+            imgRemoveButton.className = `object-contain w-full h-full  hover:cursor-pointer`
+            removeButton.appendChild(imgRemoveButton)
             item.appendChild(removeButton)
 
             if (window.outerWidth >= 1280) {
@@ -108,9 +113,8 @@
             localStorage.setItem('tasks', JSON.stringify(tasks));
         }
 
-        const tasks = JSON.parse(localStorage.getItem('tasks')) ?? [];
-        tasks.length != 0 && caricaTask();
 
+        //Event handler
         addButton.addEventListener(('click'), () => {
             console.log(tasks)
 
@@ -127,6 +131,8 @@
             }
         })
 
+        const tasks = JSON.parse(localStorage.getItem('tasks')) ?? [];
+        tasks.length != 0 && caricaTask();
 
     </script>
 </body>
